@@ -7,6 +7,7 @@ const TT_MUL = "MUL";
 const TT_DIV = "DIV";
 const TT_LPAREN = "LPAREN";
 const TT_RPAREN = "RPAREN";
+const TT_NEWLINE = "NEWLINE";
 const TT_EOF = "EOF";
 
 module.exports = {
@@ -18,6 +19,7 @@ module.exports = {
     TT_DIV,
     TT_LPAREN,
     TT_RPAREN,
+    TT_NEWLINE,
     TT_EOF,
     DIGIT
 };

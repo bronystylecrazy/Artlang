@@ -8,6 +8,7 @@ const {
     TT_DIV,
     TT_LPAREN,
     TT_RPAREN,
+    TT_NEWLINE,
     TT_EOF,
     DIGIT 
 } = require("./Contants");
@@ -52,7 +53,7 @@ class Lexer{
     makeTokens(type){
         let tokens = [];
         while(this.currentChar != null){
-            if(' \t'.includes(this.currentChar)){
+            if(' \t\n\r'.includes(this.currentChar)){
                 this.advance();
                 continue;
             }

@@ -7,6 +7,7 @@ const {
     TT_DIV,
     TT_LPAREN,
     TT_RPAREN,
+    TT_EOF,
     DIGIT 
 } = require("./Contants");
 const { InvalidSyntaxError } = require("./Error");
@@ -39,7 +40,10 @@ class ParseResult{
     }
     
     toString(){
-        return this.node.toString();
+        if(this.node){
+            return this.node.toString();
+        }
+        return this.node;
     }
 }
 
@@ -59,13 +63,11 @@ class Parser{
     factor(){
         let token = this.currentToken;
         let res = new ParseResult();
-        console.log(token)
         if([TT_INT,TT_FLOAT].includes(token.type)){
             res.register(this.advance());
-            console.log(token)
             return res.success(new NumberNode(token));
         }
-        return res.failure(new InvalidSyntaxError('Expected Int or Float', token.posStart, token.postEnd));
+        return res.failure(new InvalidSyntaxError('Expected Int or Float', token.posStart, token.postEnd).toString());
     }
 
     term(){
@@ -77,18 +79,26 @@ class Parser{
     }
 
     BinaryOperator(func, operators){
-        let left = func.call(this);
+        let res = new ParseResult();
+        let left = res.register(func.call(this));
+
+        if(res.error) return res;
+
         while(operators.includes(this.currentToken.type)){
             let operator = this.currentToken;
-            this.advance();
-            let right = func.call(this);
+            res.register(this.advance());
+            let right = res.register(func.call(this));
+            if(res.error) return res;
             left = new BinaryOperatorNode(left, operator, right);
         }
-        return left;
+        return res.success(left);
     }
 
     parse(){
         let result = this.expression();
+        if(!result.error && this.currentToken.type != TT_EOF){
+            return result.failure(new InvalidSyntaxError(`Expected '+', '-', '*',or '/'`, this.currentToken.posStart, this.currentToken.posEnd).toString());
+        }
         return result;
     }
 }

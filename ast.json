@@ -1,0 +1,115 @@
+{
+  "node": {
+    "left": {
+      "left": {
+        "node": {
+          "node": {
+            "token": {
+              "type": "INT",
+              "value": 1,
+              "posStart": {
+                "idx": 0,
+                "line": 0,
+                "column": 0,
+                "fileName": "test.txt",
+                "fileText": "1 + 2 + 3"
+              },
+              "posEnd": {
+                "idx": 9,
+                "line": 0,
+                "column": 9,
+                "fileName": "test.txt",
+                "fileText": "1 + 2 + 3"
+              }
+            },
+            "value": 1
+          }
+        }
+      },
+      "operator": {
+        "type": "PLUS",
+        "posStart": {
+          "idx": 2,
+          "line": 0,
+          "column": 2,
+          "fileName": "test.txt",
+          "fileText": "1 + 2 + 3"
+        },
+        "posEnd": {
+          "idx": 3,
+          "line": 0,
+          "column": 3,
+          "fileName": "test.txt",
+          "fileText": "1 + 2 + 3"
+        }
+      },
+      "right": {
+        "node": {
+          "node": {
+            "token": {
+              "type": "INT",
+              "value": 2,
+              "posStart": {
+                "idx": 4,
+                "line": 0,
+                "column": 4,
+                "fileName": "test.txt",
+                "fileText": "1 + 2 + 3"
+              },
+              "posEnd": {
+                "idx": 9,
+                "line": 0,
+                "column": 9,
+                "fileName": "test.txt",
+                "fileText": "1 + 2 + 3"
+              }
+            },
+            "value": 2
+          }
+        }
+      }
+    },
+    "operator": {
+      "type": "PLUS",
+      "posStart": {
+        "idx": 6,
+        "line": 0,
+        "column": 6,
+        "fileName": "test.txt",
+        "fileText": "1 + 2 + 3"
+      },
+      "posEnd": {
+        "idx": 7,
+        "line": 0,
+        "column": 7,
+        "fileName": "test.txt",
+        "fileText": "1 + 2 + 3"
+      }
+    },
+    "right": {
+      "node": {
+        "node": {
+          "token": {
+            "type": "INT",
+            "value": 3,
+            "posStart": {
+              "idx": 8,
+              "line": 0,
+              "column": 8,
+              "fileName": "test.txt",
+              "fileText": "1 + 2 + 3"
+            },
+            "posEnd": {
+              "idx": 9,
+              "line": 0,
+              "column": 9,
+              "fileName": "test.txt",
+              "fileText": "1 + 2 + 3"
+            }
+          },
+          "value": 3
+        }
+      }
+    }
+  }
+}

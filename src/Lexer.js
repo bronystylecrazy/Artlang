@@ -8,6 +8,7 @@ const {
     TT_DIV,
     TT_LPAREN,
     TT_RPAREN,
+    TT_EOF,
     DIGIT 
 } = require("./Contants");
 
@@ -56,32 +57,32 @@ class Lexer{
                 continue;
             }
             if(this.currentChar == '+'){
-                tokens.push(new Token(TT_PLUS));
+                tokens.push(new Token(TT_PLUS,undefined,this.pos));
                 this.advance();
                 continue;
             }
             if(this.currentChar == '-'){
-                tokens.push(new Token(TT_MINUS));
+                tokens.push(new Token(TT_MINUS,undefined,this.pos));
                 this.advance();
                 continue;
             }
             if(this.currentChar == '*'){
-                tokens.push(new Token(TT_MUL));
+                tokens.push(new Token(TT_MUL,undefined,this.pos));
                 this.advance();
                 continue;
             }
             if(this.currentChar == '/'){
-                tokens.push(new Token(TT_DIV));
+                tokens.push(new Token(TT_DIV,undefined,this.pos));
                 this.advance();
                 continue;
             }
             if(this.currentChar == '('){
-                tokens.push(new Token(TT_LPAREN));
+                tokens.push(new Token(TT_LPAREN,undefined,this.pos));
                 this.advance();
                 continue;
             }
             if(this.currentChar == ')'){
-                tokens.push(new Token(TT_RPAREN));
+                tokens.push(new Token(TT_RPAREN,undefined,this.pos));
                 this.advance();
                 continue;
             }
@@ -96,11 +97,14 @@ class Lexer{
             process.exit(1);
             return [];
         }
+        tokens.push(new Token(TT_EOF,undefined,this.pos));
         return tokens;
     }
     makeNumber(){
         let number = '';
+        let posStart = this.pos.copy();
         let dotCount = 0;
+
         while(this.currentChar != null && (DIGIT+'.').includes(this.currentChar)){
             if(this.currentChar == '.'){
                 if(dotCount == 1) break;
@@ -112,9 +116,9 @@ class Lexer{
             this.advance();
         }
         if(dotCount == 0){
-            return new Token(TT_INT, parseInt(number));
+            return new Token(TT_INT, parseInt(number), posStart, this.pos);
         }
-        return new Token(TT_FLOAT, parseFloat(number));
+        return new Token(TT_FLOAT, parseFloat(number), posStart, this.pos);
     }
 }
 

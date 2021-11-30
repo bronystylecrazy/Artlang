@@ -1,3 +1,4 @@
+const colors = require('colors');
 class Error{
     constructor(name, message, posStart, posEnd){
         this.name = name;
@@ -7,8 +8,8 @@ class Error{
     }
     toString(){
         let result = `${this.name}: ${this.message}`;
-        result += `\n\tat ${this.posStart?.fileName}, Line: ${this.posStart?.line}, Column: ${this.posStart?.column}`;
-        return result;
+        result += `\n    at ${this.posStart?.fileName}, Line: ${this.posStart?.line}, Column: ${this.posStart?.column}`;
+        return result.red;
     }
 }
 
@@ -26,6 +27,7 @@ class InvalidSyntaxError extends Error{
 }
 
 module.exports = {
+    Error,
     IllegalCharacterError,
     InvalidSyntaxError
 }

@@ -7,6 +7,7 @@ const TT_MUL = "MUL";
 const TT_DIV = "DIV";
 const TT_LPAREN = "LPAREN";
 const TT_RPAREN = "RPAREN";
+const TT_EOF = "EOF";
 
 module.exports = {
     TT_INT,
@@ -17,5 +18,6 @@ module.exports = {
     TT_DIV,
     TT_LPAREN,
     TT_RPAREN,
+    TT_EOF,
     DIGIT
 };

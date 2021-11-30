@@ -46,9 +46,30 @@ class UnaryOperatorNode extends Node{
     }
 }
 
+class VarAccessNode extends Node{
+    constructor(varNameToken){
+        super();
+        this.token = varNameToken;
+        this.posStart = this.token.posStart;
+        this.posEnd = this.token.posEnd;
+    }
+}
+
+class VarAssignmentNode extends Node{
+    constructor(varNameToken, valueNode){
+        super();
+        this.token = varNameToken;
+        this.valueNode = valueNode;
+        this.posStart = this.token.posStart;
+        this.posEnd = this.valueNode.posEnd;
+    }
+}
+
 module.exports = {
     Node,
     NumberNode,
     BinaryOperatorNode,
-    UnaryOperatorNode
+    UnaryOperatorNode,
+    VarAccessNode,
+    VarAssignmentNode
 };

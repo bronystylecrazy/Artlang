@@ -6,11 +6,18 @@ const {
     TT_MINUS,
     TT_MUL,
     TT_DIV,
+    TT_POW,
     TT_LPAREN,
     TT_RPAREN,
     TT_NEWLINE,
     TT_EOF,
-    DIGIT 
+    TT_EQ,
+    DIGIT,
+    LETTERS,
+    LETTER_DIGIT,
+    KEYWORDS,
+    TT_IDENTIFIER,
+    TT_KEYWORD,
 } = require("./Contants");
 
 class Token{
@@ -26,6 +33,12 @@ class Token{
             this.posEnd = posEnd;
         }
     }
+
+    matches(type, value){
+        return this.type === type &&
+            (typeof value === 'undefined' || this.value === value);
+    }
+
     toString(){
         if(typeof this.value === 'undefined')
             return this.type;
@@ -68,9 +81,16 @@ class Lexer{
                 continue;
             }
             if(this.currentChar == '*'){
-                tokens.push(new Token(TT_MUL,undefined,this.pos));
+                let originPos = this.pos.copy();
                 this.advance();
-                continue;
+                if(this.currentChar == '*'){
+                    tokens.push(new Token(TT_POW,undefined,originPos, this.pos));
+                    this.advance();
+                    continue;
+                }else{
+                    tokens.push(new Token(TT_MUL,undefined,originPos));
+                    continue;
+                }
             }
             if(this.currentChar == '/'){
                 tokens.push(new Token(TT_DIV,undefined,this.pos));
@@ -87,8 +107,18 @@ class Lexer{
                 this.advance();
                 continue;
             }
+            if(this.currentChar == '='){
+                tokens.push(new Token(TT_EQ,undefined,this.pos));
+                this.advance();
+                continue;
+            }
+            
             if(DIGIT.includes(this.currentChar)){
                 tokens.push(this.makeNumber());
+                continue;
+            }
+            if((LETTERS+'_').includes(this.currentChar)){
+                tokens.push(this.makeIdentifier());
                 continue;
             }
             let char = this.currentChar;
@@ -121,6 +151,16 @@ class Lexer{
         }
         return new Token(TT_FLOAT, parseFloat(number), posStart, this.pos);
     }
+    makeIdentifier(){
+        let identifier = '';
+        let posStart = this.pos.copy();
+        while(this.currentChar != null && (LETTER_DIGIT+'_').includes(this.currentChar)){
+            identifier += this.currentChar;
+            this.advance();
+        }
+        let tokenType = KEYWORDS.includes(identifier) ? TT_KEYWORD : TT_IDENTIFIER;
+        return new Token(tokenType, identifier, posStart, this.pos);
+    }
 }
 
 class Position{
@@ -145,4 +185,4 @@ class Position{
     }
 }
 
-module.exports = Lexer;
+module.exports = {Lexer, Token, Position};

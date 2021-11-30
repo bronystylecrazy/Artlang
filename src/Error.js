@@ -73,7 +73,6 @@ class RuntimeError extends Error{
         let ctx = this.context;
         let position = this.posStart;
         while(ctx){
-            console.log('CONTEXT', ctx);
             result = `    at ${position.fileName}, Line: ${position.line}, Column: ${position.column} in ${ctx.displayName}\n` + result;
             ctx = ctx?.parent;
             position = ctx?.parentEntryPosition;

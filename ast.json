@@ -1,106 +1,54 @@
-{
-  "name": "BinaryOperatorNode",
-  "left": {
-    "name": "NumberNode",
-    "token": {
-      "type": "INT",
-      "value": 1,
-      "posStart": {
-        "idx": 0,
-        "line": 0,
-        "column": 0,
-        "fileName": "test.txt",
-        "fileText": "1+2"
-      },
-      "posEnd": {
-        "idx": 3,
-        "line": 0,
-        "column": 3,
-        "fileName": "test.txt",
-        "fileText": "1+2"
-      }
-    },
-    "value": 1,
+[
+  {
+    "type": "PLUS",
     "posStart": {
       "idx": 0,
       "line": 0,
       "column": 0,
       "fileName": "test.txt",
-      "fileText": "1+2"
+      "fileText": "+6"
     },
     "posEnd": {
-      "idx": 3,
+      "idx": 1,
       "line": 0,
-      "column": 3,
+      "column": 1,
       "fileName": "test.txt",
-      "fileText": "1+2"
+      "fileText": "+6"
     }
   },
-  "operator": {
-    "type": "PLUS",
+  {
+    "type": "INT",
+    "value": 6,
     "posStart": {
       "idx": 1,
       "line": 0,
       "column": 1,
       "fileName": "test.txt",
-      "fileText": "1+2"
+      "fileText": "+6"
     },
     "posEnd": {
       "idx": 2,
       "line": 0,
       "column": 2,
       "fileName": "test.txt",
-      "fileText": "1+2"
+      "fileText": "+6"
     }
   },
-  "right": {
-    "name": "NumberNode",
-    "token": {
-      "type": "INT",
-      "value": 2,
-      "posStart": {
-        "idx": 2,
-        "line": 0,
-        "column": 2,
-        "fileName": "test.txt",
-        "fileText": "1+2"
-      },
-      "posEnd": {
-        "idx": 3,
-        "line": 0,
-        "column": 3,
-        "fileName": "test.txt",
-        "fileText": "1+2"
-      }
-    },
-    "value": 2,
+  {
+    "type": "EOF",
     "posStart": {
       "idx": 2,
       "line": 0,
       "column": 2,
       "fileName": "test.txt",
-      "fileText": "1+2"
+      "fileText": "+6"
     },
     "posEnd": {
       "idx": 3,
       "line": 0,
       "column": 3,
       "fileName": "test.txt",
-      "fileText": "1+2"
+      "fileText": "+6"
     }
-  },
-  "posStart": {
-    "idx": 0,
-    "line": 0,
-    "column": 0,
-    "fileName": "test.txt",
-    "fileText": "1+2"
-  },
-  "posEnd": {
-    "idx": 3,
-    "line": 0,
-    "column": 3,
-    "fileName": "test.txt",
-    "fileText": "1+2"
   }
-}
+]

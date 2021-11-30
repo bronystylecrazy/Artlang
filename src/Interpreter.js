@@ -1,6 +1,6 @@
 const colors = require('colors');
 const e = require('express');
-const { TT_PLUS, TT_MUL, TT_MINUS, TT_DIV } = require('./Contants');
+const { TT_PLUS, TT_MUL, TT_MINUS, TT_DIV, TT_POW } = require('./Contants');
 const { RuntimeError } = require('./Error');
 const { Node } = require('./Node');
 const { ParseResult } = require('./Parser');
@@ -43,7 +43,10 @@ class Interpreter{
             
         }else if(node.operator.type == TT_DIV){
             result = left.div(right);
+        }else if(node.operator.type == TT_POW){
+            result = left.pow(right);
         }
+
         if(result.error)
             return res.failure(result.error.toString());
         result = result.value;
@@ -60,6 +63,25 @@ class Interpreter{
         right = right.value;
         
         return right.setPos(node.posStart, node.posEnd);
+    }
+
+    visit_VarAccessNode(node,context){
+        let res = new RuntimeResult();
+        let varName = node.token.value;
+        let value = context.symbols[varName];
+        if(!value){
+            return res.failure(new RuntimeError(`Undefined variable ${varName}`, node.posStart, node.posEnd));
+        }
+        return res.success(value);
+    }
+
+    visit_VarAssignmentNode(node,context){
+        let res = new RuntimeResult();
+        let varName = node.token.value;
+        let value = res.register(this.visit(node.valueNode,context));
+        if(res.error) return res;
+        context.symbols[varName] = value;
+        return res.success(value);
     }
 }
 
@@ -103,6 +125,12 @@ class Number{
                 );
             }
             return new RuntimeResult().success(new Number(this.value / other.value).setContext(this.context));
+        }
+    }
+
+    pow(other){
+        if(other instanceof Number){
+            return new RuntimeResult().success(new Number(Math.pow(this.value, other.value)).setContext(this.context));
         }
     }
 

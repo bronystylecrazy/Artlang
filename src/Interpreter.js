@@ -1,10 +1,9 @@
 const colors = require('colors');
-const e = require('express');
 const { TT_PLUS, TT_MUL, TT_MINUS, TT_DIV, TT_POW } = require('./Contants');
 const { RuntimeError } = require('./Error');
-const { Node } = require('./Node');
 const { ParseResult } = require('./Parser');
 const { RuntimeResult } = require('./Result');
+const { Number, String } = require('./Atomic');
 
 class Interpreter{
 
@@ -23,7 +22,6 @@ class Interpreter{
     }
 
     visit_NumberNode(node,context){
-       
         return new RuntimeResult().success(new Number(node.value).setContext(context).setPos(node.posStart, node.posEnd));
     }
 
@@ -46,7 +44,6 @@ class Interpreter{
         }else if(node.operator.type == TT_POW){
             result = left.pow(right);
         }
-
         if(result.error)
             return res.failure(result.error.toString());
         result = result.value;
@@ -57,6 +54,9 @@ class Interpreter{
         let right = res.register(this.visit(node.right),context);
         if(node.operator.type == TT_MINUS){
             right = right.mul(new Number(-1, node.posStart, node.posEnd));
+        }
+        if(node.operator.type == TT_PLUS){
+            right = right.mul(new Number(1, node.posStart, node.posEnd));
         }
         if(right.error)
             return res.failure(right.error);
@@ -70,8 +70,9 @@ class Interpreter{
         let varName = node.token.value;
         let value = context.symbols[varName];
         if(!value){
-            return res.failure(new RuntimeError(`Undefined variable ${varName}`, node.posStart, node.posEnd));
+            return res.failure(new RuntimeError(`Undefined variable '${varName}'`, node.posStart, node.posEnd, context));
         }
+        value = value.copy().setPos(node.posStart, node.posEnd);
         return res.success(value);
     }
 
@@ -80,63 +81,15 @@ class Interpreter{
         let varName = node.token.value;
         let value = res.register(this.visit(node.valueNode,context));
         if(res.error) return res;
+        if(varName in context.symbols){
+            return res.failure(new RuntimeError(`Variable '${varName}' is already defined`, node.posStart, node.posEnd, context));
+        }
         context.symbols[varName] = value;
         return res.success(value);
     }
-}
 
-class Number{
-    constructor(value){
-        this.value = value;
-        this.setContext();
-        this.setPos();
-    }
-    setContext(context){
-        this.context = context;
-        return this;
-    }
-
-    setPos(posStart, posEnd){
-        this.posStart = posStart;
-        this.posEnd = posEnd;
-        return this;
-    }
-
-    add(other){
-        if(other instanceof Number){
-            return new RuntimeResult().success(new Number(this.value + other.value).setContext(this.context));
-        }
-    }
-    sub(other){
-        if(other instanceof Number){
-            return new RuntimeResult().success(new Number(this.value - other.value).setContext(this.context));
-        }
-    }
-    mul(other){
-        if(other instanceof Number){
-            return new RuntimeResult().success(new Number(this.value * other.value).setContext(this.context));
-        }
-    }
-    div(other){
-        if(other instanceof Number){
-            if(other.value == 0){
-                return new RuntimeResult().failure(
-                    new RuntimeError('Division by zero', other.posStart, other.posEnd, this.context).toString()
-                );
-            }
-            return new RuntimeResult().success(new Number(this.value / other.value).setContext(this.context));
-        }
-    }
-
-    pow(other){
-        if(other instanceof Number){
-            return new RuntimeResult().success(new Number(Math.pow(this.value, other.value)).setContext(this.context));
-        }
-    }
-
-    toString(){
-        return this.value.toString();
+    visit_StringNode(node, context){
+        return new RuntimeResult().success(new String(node.value).setPos(node.posStart, node.posEnd).setContext(context));
     }
 }
-
-module.exports = {Interpreter, Number};
+module.exports = {Interpreter };

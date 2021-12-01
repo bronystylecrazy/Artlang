@@ -1,54 +1,39 @@
-[
-  {
-    "type": "PLUS",
+{
+  "error": "\u001b[31mInvalidSyntaxError: Expected '+', '-', '*',or '/'\nmessage = 10\n        ^\n    at test.txt, Line: 1, Column: 9\u001b[39m",
+  "node": {
+    "name": "VarAccessNode",
+    "token": {
+      "type": "IDENTIFIER",
+      "value": "message",
+      "posStart": {
+        "idx": 0,
+        "line": 0,
+        "column": 0,
+        "fileName": "test.txt",
+        "fileText": "message = 10"
+      },
+      "posEnd": {
+        "idx": 12,
+        "line": 0,
+        "column": 12,
+        "fileName": "test.txt",
+        "fileText": "message = 10"
+      }
+    },
     "posStart": {
       "idx": 0,
       "line": 0,
       "column": 0,
       "fileName": "test.txt",
-      "fileText": "+6"
+      "fileText": "message = 10"
     },
     "posEnd": {
-      "idx": 1,
+      "idx": 12,
       "line": 0,
-      "column": 1,
+      "column": 12,
       "fileName": "test.txt",
-      "fileText": "+6"
+      "fileText": "message = 10"
     }
   },
-  {
-    "type": "INT",
-    "value": 6,
-    "posStart": {
-      "idx": 1,
-      "line": 0,
-      "column": 1,
-      "fileName": "test.txt",
-      "fileText": "+6"
-    },
-    "posEnd": {
-      "idx": 2,
-      "line": 0,
-      "column": 2,
-      "fileName": "test.txt",
-      "fileText": "+6"
-    }
-  },
-  {
-    "type": "EOF",
-    "posStart": {
-      "idx": 2,
-      "line": 0,
-      "column": 2,
-      "fileName": "test.txt",
-      "fileText": "+6"
-    },
-    "posEnd": {
-      "idx": 3,
-      "line": 0,
-      "column": 3,
-      "fileName": "test.txt",
-      "fileText": "+6"
-    }
-  }
-]
+  "advance_count": 1
+}

@@ -8,6 +8,7 @@ const TT_MINUS = "MINUS";
 const TT_MUL = "MUL";
 const TT_DIV = "DIV";
 const TT_POW = "POW";
+const TT_STRING = "STRING";
 const TT_LPAREN = "LPAREN";
 const TT_RPAREN = "RPAREN";
 const TT_NEWLINE = "NEWLINE";
@@ -15,10 +16,12 @@ const TT_IDENTIFIER = "IDENTIFIER";
 const TT_EQ = `EQ`;
 const TT_KEYWORD = 'KEYWORD';
 const TT_EOF = "EOF";
+const TT_END = "END";
 const noop = () => {};
 
 const KEYWORDS = [
-    'let'
+    'let',
+    'undefined'
 ];
 
 module.exports = {
@@ -32,6 +35,7 @@ module.exports = {
     TT_LPAREN,
     TT_RPAREN,
     TT_NEWLINE,
+    TT_STRING,
     TT_EOF,
     noop,
     DIGIT,
@@ -40,5 +44,6 @@ module.exports = {
     TT_IDENTIFIER,
     TT_EQ,
     TT_KEYWORD,
-    KEYWORDS
+    KEYWORDS,
+    TT_END
 };

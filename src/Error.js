@@ -1,18 +1,7 @@
 const colors = require('colors');
 
-function displayLine(text, posStart, posEnd){
-    const left = Math.max(0, posStart.idx - 6);
-    const right = Math.min(text.length, posEnd.idx + 6);
-    return text.slice(left,right);
-}
 const repeatStr = (count, char) => {
     return [...Array(count)].reduce(c => c + char,'')
-}
-
-function displayArrow(text, posStart, posEnd){
-    const line = displayLine(text, posStart, posEnd);
-    const arrows = repeatStr(posEnd.column - posStart.column + 1,'^');
-    return repeatStr(Math.abs(text.length - arrows.length),' ') + arrows;
 }
 
 const stringWithArrows = (text, posStart, posEnd) => {
@@ -46,7 +35,7 @@ class Error{
     toString(){
         let result = `${this.name}: ${this.message}`;
         result += `\n${stringWithArrows(this.posStart?.fileText,this.posStart, this.posEnd)}`;
-        result += `\n    at ${this.posStart?.fileName}, Line: ${this.posStart?.line}, Column: ${this.posStart?.column}`;
+        result += `\n    at ${this.posStart?.fileName}, Line: ${this.posStart?.line + 1}, Column: ${this.posStart?.column + 1}`;
         return result.red;
     }
 }
@@ -69,15 +58,15 @@ class RuntimeError extends Error{
         super("RuntimeError", message, posStart, posEnd,...rest);
     }
     generateStacktrace(body){
-        let result = '';
+        let result = ``;
         let ctx = this.context;
         let position = this.posStart;
         while(ctx){
-            result = `    at ${position.fileName}, Line: ${position.line}, Column: ${position.column} in ${ctx.displayName}\n` + result;
+            result = `    at ${position.fileName}, Line: ${position.line+1}, Column: ${position.column+1} in ${ctx.displayName}\n` + result;
             ctx = ctx?.parent;
             position = ctx?.parentEntryPosition;
         }
-        return `Traceback from these stackframes:\n\n ${body}\n` + result;
+        return `Traceback from these stackframes:\n\n${body}\n${this.name}: ${this.message}\n` + result;
     }
     toString(){
         let result = ``;

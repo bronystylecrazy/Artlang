@@ -7,6 +7,7 @@ const {
     TT_MUL,
     TT_DIV,
     TT_POW,
+    TT_STRING,
     TT_LPAREN,
     TT_RPAREN,
     TT_NEWLINE,
@@ -18,6 +19,7 @@ const {
     KEYWORDS,
     TT_IDENTIFIER,
     TT_KEYWORD,
+    TT_END,
 } = require("./Contants");
 
 class Token{
@@ -112,7 +114,18 @@ class Lexer{
                 this.advance();
                 continue;
             }
-            
+
+            if(this.currentChar == ';'){
+                tokens.push(new Token(TT_END,undefined,this.pos));
+                this.advance();
+                continue;
+            }
+
+            if(this.currentChar == '"' || this.currentChar == "'"){
+                tokens.push(this.makeString());
+                continue;
+            }
+
             if(DIGIT.includes(this.currentChar)){
                 tokens.push(this.makeNumber());
                 continue;
@@ -121,12 +134,12 @@ class Lexer{
                 tokens.push(this.makeIdentifier());
                 continue;
             }
+
             let char = this.currentChar;
             let posStart = this.pos.copy();
             this.advance();
-            console.error( new IllegalCharacterError(`'${char}'`,posStart, this.pos).toString());
-            process.exit(1);
-            return [];
+            console.error(new IllegalCharacterError(`'${char}'`,posStart, this.pos).toString());
+            return undefined;
         }
         tokens.push(new Token(TT_EOF,undefined,this.pos));
         return tokens;
@@ -160,6 +173,22 @@ class Lexer{
         }
         let tokenType = KEYWORDS.includes(identifier) ? TT_KEYWORD : TT_IDENTIFIER;
         return new Token(tokenType, identifier, posStart, this.pos);
+    }
+
+    makeString(){
+        let string = '';
+        let posStart = this.pos.copy();
+        var char = this.currentChar;
+        this.advance();
+        while(this.currentChar != null && this.currentChar != char){
+            string += this.currentChar;
+            this.advance();
+        }
+        if(this.currentChar != char){
+            throw new IllegalCharacterError(`Expected '${char}' at the end of the string`,posStart, this.pos).toString();
+        }
+        this.advance();
+        return new Token(TT_STRING, string, posStart, this.pos);
     }
 }
 

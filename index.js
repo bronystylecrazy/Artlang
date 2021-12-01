@@ -17,11 +17,13 @@ function shell(sourceCode)
     /** Generate tokens */
     let lexer = new Lexer(text, 'test.txt');
     let tokens = lexer.makeTokens();
-    if(tokens == []) return;
-    require('fs').writeFileSync('./ast.json', JSON.stringify(tokens, null, 2));
+    if(!tokens){
+        return;
+    }
     /** Generate AST */
     let parser = new Parser(tokens);
     let ast = parser.parse();
+    require('fs').writeFileSync('./ast.json', JSON.stringify(ast, null, 2));
     if (ast.error ) return console.log(ast.error);
 
         // console.log(ast.toString())
@@ -37,17 +39,11 @@ function shell(sourceCode)
     return r.value.toString();
 }
 
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin, //or fileStream
-});
-(async () => {
-    for await (const line of rl) {
-        
-        console.log(shell(line));
-    }
-})();
-// while(true){
-    // var sourceCode =  readlineSync.question('May I have your name? ')
-    
-// }
+// console.log(shell('hello'))
+
+const readlineSync = require('readline-sync');
+while(true){
+    var sourceCode = readlineSync.question('>').trim();
+    if(sourceCode === '') continue;
+    console.log(shell(sourceCode));
+}

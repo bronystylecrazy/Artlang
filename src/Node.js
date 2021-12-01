@@ -17,6 +17,19 @@ class NumberNode extends Node{
     }
 }
 
+class StringNode extends Node {
+    constructor(token){
+        super();
+        this.token = token;
+        this.value = token.value;
+        this.posStart = this.token.posStart;
+        this.posEnd = this.token.posEnd;
+    }
+    toString(){
+        return `${this.token.toString()}`;
+    }
+}
+
 class BinaryOperatorNode extends Node{
     constructor(left, operator, right){
         super();
@@ -55,8 +68,21 @@ class VarAccessNode extends Node{
     }
 }
 
+class UndefinedNode extends Node{
+    constructor(token){
+        super();
+        this.token = token;
+        this.value = token.value;
+        this.posStart = this.token.posStart;
+        this.posEnd = this.token.posEnd;
+    }
+    toString(){
+        return `${this.token.toString()}`;
+    }
+}
+
 class VarAssignmentNode extends Node{
-    constructor(varNameToken, valueNode){
+    constructor(varNameToken, valueNode=new UndefinedNode()){
         super();
         this.token = varNameToken;
         this.valueNode = valueNode;
@@ -71,5 +97,6 @@ module.exports = {
     BinaryOperatorNode,
     UnaryOperatorNode,
     VarAccessNode,
-    VarAssignmentNode
+    VarAssignmentNode,
+    StringNode
 };

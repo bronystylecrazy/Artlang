@@ -1,8 +1,7 @@
-const { Error } = require('./src/Error');
 const { Lexer } = require('./src/Lexer');
 const { Parser } = require('./src/Parser');
 const { Interpreter } = require('./src/Interpreter');
-const { ParseResult } = require('./src/Result');
+const colors = require('colors');
 const { Context } = require('./src/Context');
 console.clear();
 // const sourceCode = require('fs').readFileSync('./test.js', 'utf8');
@@ -11,39 +10,46 @@ const globalSymbols = {};
 let context  = Context.createContext('<module>');
 context.symbols = globalSymbols;
 
+
 function shell(sourceCode)
 {
-    let text = sourceCode;
     /** Generate tokens */
-    let lexer = new Lexer(text, 'test.txt');
-    let tokens = lexer.makeTokens();
-    if(!tokens){
+
+    let lexer = new Lexer(sourceCode, '<vm>');
+    let [tokens, error] = lexer.makeTokens({ save: true});
+
+    if(error)
+    {
+        console.log(error);
         return;
     }
-    /** Generate AST */
+
+    /** Generate AST ParseResult */
     let parser = new Parser(tokens);
-    let ast = parser.parse();
-    require('fs').writeFileSync('./ast.json', JSON.stringify(ast, null, 2));
-    if (ast.error ) return console.log(ast.error);
+    let ast = parser.parse({ save: true });
 
-        // console.log(ast.toString())
-    /** AST Preview */
-    // console.log(ast)
+    if (ast.error){
+        console.log(ast.error.toString());
+        return;
+    }
 
-    /** RUN PROGRAM */
-    
-    let result = new Interpreter(ast);
-   
-    const r = result.visit(ast.node, context);
-    if(r.error) return console.log(r.error.toString());
-    return r.value.toString();
+    /** Interpret */
+    let interpreter = new Interpreter(ast);
+    let result = interpreter.visit(ast.node, context);
+
+    if(result.error){
+        console.log(result.error.toString());
+        return;
+    }
+
+    /** Show the value */
+    console.log((result.value.toString()+'').gray);
 }
 
-// console.log(shell('hello'))
 
 const readlineSync = require('readline-sync');
+
 while(true){
     var sourceCode = readlineSync.question('>').trim();
-    if(sourceCode === '') continue;
-    console.log(shell(sourceCode));
+    if(sourceCode != '') shell(sourceCode);
 }

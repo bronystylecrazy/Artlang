@@ -17,33 +17,77 @@ const TT_EQ = `EQ`;
 const TT_KEYWORD = 'KEYWORD';
 const TT_EOF = "EOF";
 const TT_END = "END";
+const TT_EEQ = `EEQ`;
+const TT_NEQ = `NEQ`;
+const TT_LT = `LT`;
+const TT_GT = `GT`;
+const TT_LTE = `LTE`;
+const TT_GTE = `GTE`;
+const TT_NOT = "NOT";
+const TT_AND = "AND";
+const TT_OR = "OR";
+const TT_LAND = "LAND";
+const TT_LOR = "LOR";
+const TT_XOR = "XOR";
+const TT_INV = "INV";
+const TT_COMMA = `COMMA`;
 const noop = () => {};
 
 const KEYWORDS = [
+    'and',
+    'clear',
+    'else',
+    'false',
+    'if',
+    'elif',
     'let',
-    'undefined'
+    'not',
+    'or',
+    'true',
+    'undefined',
+    'for',
+    'in',
+    'of',
+    'while',
+    'break',
+    'to',
+    'step',
 ];
 
 module.exports = {
-    TT_INT,
+    DIGIT,
+    KEYWORDS,
+    LETTER_DIGIT,
+    LETTERS,
+    noop,
+    TT_AND,
+    TT_COMMA,
+    TT_DIV,
+    TT_EEQ,
+    TT_END,
+    TT_EOF,
+    TT_EQ,
     TT_FLOAT,
-    TT_PLUS,
+    TT_GT,
+    TT_GTE,
+    TT_IDENTIFIER,
+    TT_INT,
+    TT_INV,
+    TT_KEYWORD,
+    TT_LAND,
+    TT_LOR,
+    TT_LPAREN,
+    TT_LT,
+    TT_LTE,
     TT_MINUS,
     TT_MUL,
-    TT_DIV,
-    TT_POW,
-    TT_LPAREN,
-    TT_RPAREN,
+    TT_NEQ,
     TT_NEWLINE,
+    TT_NOT,
+    TT_OR,
+    TT_PLUS,
+    TT_POW,
+    TT_RPAREN,
     TT_STRING,
-    TT_EOF,
-    noop,
-    DIGIT,
-    LETTERS,
-    LETTER_DIGIT,
-    TT_IDENTIFIER,
-    TT_EQ,
-    TT_KEYWORD,
-    KEYWORDS,
-    TT_END
+    TT_XOR,
 };

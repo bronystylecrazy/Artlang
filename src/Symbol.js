@@ -10,7 +10,6 @@ class Symbol{
         if(value === undefined && this.parent !== null){
             return this.parent.get(name);
         }
-
         return value;
     }
 

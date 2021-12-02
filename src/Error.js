@@ -34,7 +34,8 @@ class Error{
     }
     toString(){
         let result = `${this.name}: ${this.message}`;
-        result += `\n${stringWithArrows(this.posStart?.fileText,this.posStart, this.posEnd)}`;
+        result += "\n";
+        result += `${stringWithArrows(this.posStart?.fileText,this.posStart, this.posEnd)}`;
         result += `\n    at ${this.posStart?.fileName}, Line: ${this.posStart?.line + 1}, Column: ${this.posStart?.column + 1}`;
         return result.red;
     }
@@ -43,6 +44,12 @@ class Error{
 class IllegalCharacterError extends Error{
     constructor(message, posStart, posEnd,...rest){
         super("IllegalCharacterError", message, posStart, posEnd,...rest);
+    }
+}
+
+class ExpectedCharacterError extends Error{
+    constructor(message, posStart, posEnd,...rest){
+        super("ExpectedCharacterError", message, posStart, posEnd,...rest);
     }
 }
 
@@ -79,5 +86,6 @@ module.exports = {
     Error,
     IllegalCharacterError,
     InvalidSyntaxError,
-    RuntimeError
+    RuntimeError,
+    ExpectedCharacterError
 }

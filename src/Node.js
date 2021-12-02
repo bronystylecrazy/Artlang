@@ -26,7 +26,7 @@ class StringNode extends Node {
         this.posEnd = this.token.posEnd;
     }
     toString(){
-        return `${this.token.toString()}`;
+        return `"${this.token.toString()}"`;
     }
 }
 
@@ -72,12 +72,13 @@ class UndefinedNode extends Node{
     constructor(token){
         super();
         this.token = token;
-        this.value = token.value;
+        this.value = 'undefined';
         this.posStart = this.token.posStart;
         this.posEnd = this.token.posEnd;
     }
+
     toString(){
-        return `${this.token.toString()}`;
+        return `undefined`;
     }
 }
 
@@ -91,12 +92,71 @@ class VarAssignmentNode extends Node{
     }
 }
 
+class ExecNode extends Node{
+    constructor(token, command){
+        super();
+        this.token = token;
+        this.command = command;
+        this.posStart = this.token.posStart;
+        this.posEnd = this.token.posEnd;
+    }
+}
+
+class BooleanNode extends Node {
+    constructor(token, value){
+        super();
+        this.token = token;
+        this.value = value || token.value;
+        this.posStart = this.token.posStart;
+        this.posEnd = this.token.posEnd;
+    }
+}
+
+class IfNode extends Node{
+    constructor(cases, elseCase){
+        super();
+        this.cases = cases;
+        this.elseCase = elseCase;
+        this.posStart = this.cases[0][0].posStart;
+        this.posEnd = this.elseCase ? this.elseCase.posEnd : this.cases[this.cases.length-1][0].posEnd;
+    }
+}
+
+class ForNode extends Node{
+    constructor(varNameToken, startNode, endNode, stepNode, bodyNode){
+        super();
+        this.varNameToken = varNameToken;
+        this.startNode = startNode;
+        this.endNode = endNode;
+        this.stepNode = stepNode;
+        this.bodyNode = bodyNode;
+        this.posStart = this.varNameToken.posStart;
+        this.posEnd = this.bodyNode.posEnd;
+    }
+}
+
+class WhileNode extends Node {
+    constructor(conditionNode, bodyNode){
+        super();
+        this.conditionNode = conditionNode;
+        this.bodyNode = bodyNode;
+        this.posStart = this.conditionNode.posStart.copy();
+        this.posEnd = this.bodyNode.posEnd.copy();
+    }
+}
+
 module.exports = {
+    BinaryOperatorNode,
+    BooleanNode,
+    ExecNode,
     Node,
     NumberNode,
-    BinaryOperatorNode,
+    StringNode,
     UnaryOperatorNode,
+    UndefinedNode,
     VarAccessNode,
     VarAssignmentNode,
-    StringNode
+    IfNode,
+    ForNode,
+    WhileNode
 };

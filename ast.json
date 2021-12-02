@@ -1,39 +1,286 @@
 {
-  "error": "\u001b[31mInvalidSyntaxError: Expected '+', '-', '*',or '/'\nmessage = 10\n        ^\n    at test.txt, Line: 1, Column: 9\u001b[39m",
   "node": {
-    "name": "VarAccessNode",
-    "token": {
+    "name": "ForNode",
+    "varNameToken": {
       "type": "IDENTIFIER",
-      "value": "message",
+      "value": "i",
       "posStart": {
-        "idx": 0,
+        "idx": 4,
         "line": 0,
-        "column": 0,
-        "fileName": "test.txt",
-        "fileText": "message = 10"
+        "column": 4,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
       },
       "posEnd": {
-        "idx": 12,
+        "idx": 5,
         "line": 0,
-        "column": 12,
-        "fileName": "test.txt",
-        "fileText": "message = 10"
+        "column": 5,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
+      }
+    },
+    "startNode": {
+      "name": "NumberNode",
+      "token": {
+        "type": "INT",
+        "value": 0,
+        "posStart": {
+          "idx": 8,
+          "line": 0,
+          "column": 8,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        },
+        "posEnd": {
+          "idx": 9,
+          "line": 0,
+          "column": 9,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        }
+      },
+      "value": 0,
+      "posStart": {
+        "idx": 8,
+        "line": 0,
+        "column": 8,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
+      },
+      "posEnd": {
+        "idx": 9,
+        "line": 0,
+        "column": 9,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
+      }
+    },
+    "endNode": {
+      "name": "NumberNode",
+      "token": {
+        "type": "INT",
+        "value": 300,
+        "posStart": {
+          "idx": 13,
+          "line": 0,
+          "column": 13,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        },
+        "posEnd": {
+          "idx": 16,
+          "line": 0,
+          "column": 16,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        }
+      },
+      "value": 300,
+      "posStart": {
+        "idx": 13,
+        "line": 0,
+        "column": 13,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
+      },
+      "posEnd": {
+        "idx": 16,
+        "line": 0,
+        "column": 16,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
+      }
+    },
+    "stepNode": null,
+    "bodyNode": {
+      "name": "BinaryOperatorNode",
+      "left": {
+        "name": "NumberNode",
+        "token": {
+          "type": "INT",
+          "value": 300,
+          "posStart": {
+            "idx": 18,
+            "line": 0,
+            "column": 18,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          },
+          "posEnd": {
+            "idx": 21,
+            "line": 0,
+            "column": 21,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          }
+        },
+        "value": 300,
+        "posStart": {
+          "idx": 18,
+          "line": 0,
+          "column": 18,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        },
+        "posEnd": {
+          "idx": 21,
+          "line": 0,
+          "column": 21,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        }
+      },
+      "operator": {
+        "type": "DIV",
+        "posStart": {
+          "idx": 21,
+          "line": 0,
+          "column": 21,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        },
+        "posEnd": {
+          "idx": 22,
+          "line": 0,
+          "column": 22,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        }
+      },
+      "right": {
+        "name": "BinaryOperatorNode",
+        "left": {
+          "name": "NumberNode",
+          "token": {
+            "type": "INT",
+            "value": 200,
+            "posStart": {
+              "idx": 23,
+              "line": 0,
+              "column": 23,
+              "fileName": "<vm>",
+              "fileText": "for(i = 0 to 300) 300/(200 - i)"
+            },
+            "posEnd": {
+              "idx": 26,
+              "line": 0,
+              "column": 26,
+              "fileName": "<vm>",
+              "fileText": "for(i = 0 to 300) 300/(200 - i)"
+            }
+          },
+          "value": 200,
+          "posStart": {
+            "idx": 23,
+            "line": 0,
+            "column": 23,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          },
+          "posEnd": {
+            "idx": 26,
+            "line": 0,
+            "column": 26,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          }
+        },
+        "operator": {
+          "type": "MINUS",
+          "posStart": {
+            "idx": 27,
+            "line": 0,
+            "column": 27,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          },
+          "posEnd": {
+            "idx": 28,
+            "line": 0,
+            "column": 28,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          }
+        },
+        "right": {
+          "name": "VarAccessNode",
+          "token": {
+            "type": "IDENTIFIER",
+            "value": "i",
+            "posStart": {
+              "idx": 29,
+              "line": 0,
+              "column": 29,
+              "fileName": "<vm>",
+              "fileText": "for(i = 0 to 300) 300/(200 - i)"
+            },
+            "posEnd": {
+              "idx": 30,
+              "line": 0,
+              "column": 30,
+              "fileName": "<vm>",
+              "fileText": "for(i = 0 to 300) 300/(200 - i)"
+            }
+          },
+          "posStart": {
+            "idx": 29,
+            "line": 0,
+            "column": 29,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          },
+          "posEnd": {
+            "idx": 30,
+            "line": 0,
+            "column": 30,
+            "fileName": "<vm>",
+            "fileText": "for(i = 0 to 300) 300/(200 - i)"
+          }
+        },
+        "posStart": {
+          "idx": 23,
+          "line": 0,
+          "column": 23,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        },
+        "posEnd": {
+          "idx": 30,
+          "line": 0,
+          "column": 30,
+          "fileName": "<vm>",
+          "fileText": "for(i = 0 to 300) 300/(200 - i)"
+        }
+      },
+      "posStart": {
+        "idx": 18,
+        "line": 0,
+        "column": 18,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
+      },
+      "posEnd": {
+        "idx": 30,
+        "line": 0,
+        "column": 30,
+        "fileName": "<vm>",
+        "fileText": "for(i = 0 to 300) 300/(200 - i)"
       }
     },
     "posStart": {
-      "idx": 0,
+      "idx": 4,
       "line": 0,
-      "column": 0,
-      "fileName": "test.txt",
-      "fileText": "message = 10"
+      "column": 4,
+      "fileName": "<vm>",
+      "fileText": "for(i = 0 to 300) 300/(200 - i)"
     },
     "posEnd": {
-      "idx": 12,
+      "idx": 30,
       "line": 0,
-      "column": 12,
-      "fileName": "test.txt",
-      "fileText": "message = 10"
+      "column": 30,
+      "fileName": "<vm>",
+      "fileText": "for(i = 0 to 300) 300/(200 - i)"
     }
   },
-  "advance_count": 1
+  "advance_count": 15
 }

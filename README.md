@@ -3,13 +3,27 @@
 
 ## Grammar rules
 expr   : KEYWORD:let IDENTIFIER EQ expr
-         term ((PLUS|MINUS) term)*
+         arith_expr ((AND|OR) arith_expr)*
+
+logic_expr : NOT logic_expr
+            arith_expr ((EE|LT|GT|LTE|GTE) arith_expr)*
+
+arith_expr : term ((PLUS|MINUS) term)*
 
 term   : factor ((MUL|DIV) factor)*
 
 factor : INT|FLOAT
         POWER
 
-power  : atom (POW factor)*
-atomic   (PLUS|MINUS|IDENTIFIER) factor
+power  : atomic (POW factor)*
+
+atomic : (PLUS|MINUS|IDENTIFIER) factor
          LPAREN expr RPAREN
+
+if-expression : KEYWORD:if LPAREN expr RPAREN expr
+                (KEYWORD:else if LPAREN expr RPAREN expr)*
+                (KEYWORD:else expr)?
+
+for-expression : KEYWORD:for LPAREN IDENTIFIER EQ expr RPAREN to expr
+
+while-expression : KEYWORD:while LPAREN expr RPAREN expr

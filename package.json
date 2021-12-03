@@ -1,17 +1,32 @@
 {
   "name": "artlang",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "ArtLang a simple and stupid language",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "node index.js",
-    "dev": "nodemon index.js --ignore ast.json --ignore memory.json --ignore tokens.json --no-stdin"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bronystylecrazy/Artlang.git"
+  },
+  "keywords": [
+    "artlang",
+    "language",
+    "javascript",
+    "typescript",
+    "compiler",
+    "interpreter"
+  ],
+  "author": "Sirawit Pratoomsuwan",
   "license": "ISC",
-  "dependencies": {
-    "colors": "^1.4.0",
-    "readline-sync": "^1.4.10"
+  "bugs": {
+    "url": "https://github.com/bronystylecrazy/Artlang/issues"
+  },
+  "homepage": "https://github.com/bronystylecrazy/Artlang#readme",
+  "devDependencies": {
+    "@types/node": "^16.11.11",
+    "tsc-watch": "^4.5.0",
+    "tslint": "^6.1.3"
   }
 }

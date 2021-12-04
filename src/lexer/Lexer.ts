@@ -38,8 +38,9 @@ class Lexer{
                 tokens.push(new Token(TokenType.PLUS,undefined,this.pos.copy()));
                 this.advance();
             }else if(this.currentChar == '-'){
-                tokens.push(new Token(TokenType.MINUS,undefined,this.pos.copy()));
-                this.advance();
+                const { token, error } = this.makeMinusOrArrow();
+                if(error) return new LexerResult(error);
+                tokens.push(token);
             }else if(this.currentChar == '*'){
                 const {token, error} = this.makePower();
                 if(error) return new LexerResult(error);
@@ -62,12 +63,13 @@ class Lexer{
                 tokens.push(token);
             }else if(this.currentChar == ','){
                 tokens.push(new Token(TokenType.COMMA,undefined,this.pos.copy()));
+                this.advance();
             }else if(this.currentChar == '!'){
                 const {token, error} = this.makeNot();
                 if(error) return new LexerResult(error);
                 tokens.push(token);
             }else if(this.currentChar == '='){
-                const {token, error} = this.makeEquals();
+                const {token, error} = this.makeEqualOrArrow();
                 if(error) return new LexerResult(error);
                 tokens.push(token);
             }else if(this.currentChar == '>'){
@@ -105,6 +107,17 @@ class Lexer{
         tokens.push(new Token(TokenType.EOF,undefined,this.pos.copy()));
         if(save) this.saveTokens(tokens, fileName);
         return new LexerResult(tokens);
+    }
+
+    makeMinusOrArrow(){
+        let tokenType = TokenType.MINUS;
+        let originPos = this.pos.copy();
+        this.advance();
+
+        if(this.currentChar == '>') tokenType = TokenType.ARROW;
+
+        return new TokenResult(new Token(tokenType,undefined,originPos,this.pos.copy()));
+        this.advance();
     }
 
     makePower(){
@@ -197,13 +210,19 @@ class Lexer{
         }
         return new TokenResult( new Token(TokenType.NOT, undefined, posStart, this.pos.copy()));
     }
-    makeEquals(){
+    makeEqualOrArrow(){
         let posStart = this.pos.copy();
         this.advance();
         if(this.currentChar == '='){
             this.advance();
             return new TokenResult( new Token(TokenType.EEQ, undefined, posStart, this.pos.copy()));
         }
+        
+        if(this.currentChar == '>'){
+            this.advance();
+            return new TokenResult( new Token(TokenType.ARROW, undefined, posStart, this.pos.copy()));
+        }
+
         return new TokenResult( new Token(TokenType.EQ, undefined, posStart, this.pos.copy()));
     }
 

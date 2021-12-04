@@ -6,6 +6,7 @@ import Context from "../context/Context";
 import SymbolTable from "../context/SymbolTable";
 import String from "../atomic/String";
 import Number from "../atomic/Number";
+import Position from "../lexer/Position";
 
 const GLOBAL_VARIABLES = new SymbolTable().of({
     world: new String("hello"),
@@ -14,7 +15,7 @@ const GLOBAL_VARIABLES = new SymbolTable().of({
     count: new Number(0)
 });
 
-let globalContext = Context.createContext('<vm>',null, null, GLOBAL_VARIABLES);
+let globalContext = Context.createContext('<vm>',null, new Position(), GLOBAL_VARIABLES);
 
 const Program = (source: string): ProgramResult => {
     

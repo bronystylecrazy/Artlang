@@ -37,6 +37,9 @@ enum TokenType{
     COMMA = `COMMA`,
     COLON = `COLON`,
     SEMICOLON = `SEMICOLON`,
+    ARROW = "ARROW",
+    LBRACE = "LBRACE",
+    RBRACE = "RBRACE",
 };
 
 /** KEYWORDS */
@@ -59,6 +62,8 @@ const KEYWORDS: string[] = [
     'break',
     'to',
     'step',
+    'function',
+    'void',
 ];
 
 export {

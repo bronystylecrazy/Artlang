@@ -1,3 +1,5 @@
+import FunctionDefinitionNode from "../node/FunctionDefinitionNode";
+import Node from "../node/NodeBase";
 import { TokenType } from "../constants";
 import InvalidSyntaxError from "../error/InvalidSyntaxError";
 import Token from "../lexer/Token";
@@ -15,6 +17,7 @@ import VariableAssignmentNode from "../node/VariableAssignmentNode";
 import WhileNode from "../node/WhileNode";
 import CaseResult from "../result/CaseResult";
 import ParseResult from "../result/parseResult";
+import FunctionInvokationNode from "../node/FunctionInvokationNode";
 
 class Parser{
     public idx: number;
@@ -37,6 +40,44 @@ class Parser{
         if(this.idx < this.tokens.length)
             this.currentToken = this.tokens[this.idx];
         return this.currentToken;
+    }
+
+    functionInvokation(){
+        let res = new ParseResult();
+        let atom = res.register(this.atom());
+        if(res.error) return res;
+
+        if(this.currentToken.is(TokenType.LPAREN)){
+            res.register_advancement();
+            this.advance();
+            let argumentNodes: Node[] = [];
+            if(res.error) return res;
+
+            if(this.currentToken.is(TokenType.RPAREN)){
+                res.register_advancement();
+                this.advance();
+            }else{
+                argumentNodes.push(res.register(this.expression()));
+                if(res.error)
+                    return res.failure(new InvalidSyntaxError("Expected ')'", this.currentToken.posStart, this.currentToken.posEnd));
+                
+                while(this.currentToken.is(TokenType.COMMA)){
+                    res.register_advancement();
+                    this.advance();
+                    argumentNodes.push(res.register(this.expression()));
+                    if(res.error) return res;
+                }
+
+                if(this.currentToken.isNot(TokenType.RPAREN)){
+                    return res.failure(new InvalidSyntaxError("Expected ')'", this.currentToken.posStart, this.currentToken.posEnd));
+                }
+                res.register_advancement();
+                this.advance();
+            }
+
+            return res.success(new FunctionInvokationNode(atom, argumentNodes));
+        }
+        return res.success(atom);
     }
 
     atom(){
@@ -94,9 +135,167 @@ class Parser{
             let whileExpression = res.register( this.whileExpression() );
             if(res.error) return res;
             return res.success(whileExpression);
+        }else if(token.matches(TokenType.KEYWORD, "function")){
+            let functionDefinition = res.register( this.functionDefinition() );
+            if(res.error) return res;
+            return res.success(functionDefinition);
         }
 
         return res.failure(new InvalidSyntaxError(`Expected Int, Float, '+', '-', '*', '/', or '('\n`, token.posStart, token.posEnd));
+    }
+
+    power(){
+        return this.BinaryOperator(this.functionInvokation, [TokenType.POW], this.factor);
+    }
+
+    factor(){
+        let token = this.currentToken;
+        let res = new ParseResult();
+        if(token.is(TokenType.PLUS, TokenType.MINUS)){
+            res.register_advancement();
+            this.advance();
+
+            let factor = res.register(this.factor());
+            if(res.error) return res;
+
+            return res.success(new UnaryOperatorNode(token, factor));
+        }
+        return this.power();
+    }
+
+    term(){
+        return this.BinaryOperator(this.factor, [TokenType.MUL, TokenType.DIV]);
+    }
+
+    expression(){
+        let res = new ParseResult();
+
+        if(this.currentToken.matches(TokenType.KEYWORD, "clear")){
+            const clearToken = this.currentToken;
+            res.register_advancement();
+            this.advance();
+            return res.success(new ExecNode(clearToken, 'clear'));
+        }
+
+        if(this.currentToken.matches(TokenType.KEYWORD, "let")){
+            res.register_advancement();
+            this.advance();
+
+            if(!this.currentToken.matches(TokenType.IDENTIFIER)){
+                return res.failure(new InvalidSyntaxError("Expected Identifier", this.currentToken.posStart, this.currentToken.posEnd));
+            }
+
+            let varName = this.currentToken;
+            res.register_advancement();
+            this.advance();
+            if(this.currentToken.matches(TokenType.END)){
+                res.register_advancement();
+                this.advance();
+                return res.success(new VariableAssignmentNode(varName));
+            }
+            if(!this.currentToken.matches(TokenType.EQ)){
+                return res.failure(new InvalidSyntaxError("Expected '='", this.currentToken.posStart, this.currentToken.posEnd));
+            }
+            res.register_advancement();
+            this.advance();
+            let expression = res.register(this.expression());
+            if(res.error) return res;
+            return res.success(new VariableAssignmentNode(varName, expression));
+        }
+
+        let node = res.register(this.BinaryOperator(this.comparison_expression, [TokenType.LOR, TokenType.LAND]));
+
+        if(res.error) return res.failure(new InvalidSyntaxError(`Expected 'let', '+', '-', '*',or '/'`, this.currentToken.posStart, this.currentToken.posEnd));
+        return res.success(node);
+    }
+
+    comparison_expression(){
+        let res = new ParseResult();
+        if(this.currentToken.is(TokenType.NOT) || this.currentToken.matches(TokenType.KEYWORD, "not")){
+            const token = this.currentToken;
+            res.register_advancement();
+            this.advance();
+            let node = res.register(this.comparison_expression());
+            if(res.error) return res;
+            return res.success(new UnaryOperatorNode(token, node));
+        }
+
+        let node = res.register(this.BinaryOperator(this.arithmetic_expression, [TokenType.EEQ, TokenType.NEQ, TokenType.GT, TokenType.GTE, TokenType.LT, TokenType.LTE]));
+        
+        if(res.error){
+            return res.failure(new InvalidSyntaxError(`Expected '!=', '>', '>=', '<', '<=', or '=='`, this.currentToken.posStart, this.currentToken.posEnd));
+        }
+        return res.success(node);
+    }
+
+    arithmetic_expression(){
+        return this.BinaryOperator(this.term, [TokenType.PLUS, TokenType.MINUS]);
+    }
+
+    
+    functionDefinition(){
+        let res = new ParseResult();
+        let variableNameToken: Token = null;
+        let argumentTokens: Token[] = [];
+
+        if(!this.currentToken.matches(TokenType.KEYWORD, "function"))
+            return res.failure(new InvalidSyntaxError("Expected 'function'", this.currentToken.posStart, this.currentToken.posEnd));
+        res.register_advancement();
+        this.advance();
+
+        if(this.currentToken.is(TokenType.IDENTIFIER)){
+            variableNameToken = this.currentToken;
+            res.register_advancement();
+            this.advance();
+
+            if(this.currentToken.isNot(TokenType.LPAREN)){
+                return res.failure(new InvalidSyntaxError("Expected '('", this.currentToken.posStart, this.currentToken.posEnd));
+            }
+        }else{
+            if(this.currentToken.isNot(TokenType.LPAREN)){
+                return res.failure(new InvalidSyntaxError("Expected identifier or '('", this.currentToken.posStart, this.currentToken.posEnd));
+            }
+        }
+
+        res.register_advancement();
+        this.advance();
+        if(this.currentToken.is(TokenType.IDENTIFIER)){
+            argumentTokens.push(this.currentToken);
+            res.register_advancement();
+            this.advance();
+            while(this.currentToken.is(TokenType.COMMA)){
+                res.register_advancement();
+                this.advance();
+                if(this.currentToken.is(TokenType.IDENTIFIER)){
+                    argumentTokens.push(this.currentToken);
+                    res.register_advancement();
+                    this.advance();
+                }else{
+                    return res.failure(new InvalidSyntaxError("Expected identifier", this.currentToken.posStart, this.currentToken.posEnd));
+                }
+            }
+            if(this.currentToken.isNot(TokenType.RPAREN)){
+                return res.failure(new InvalidSyntaxError("Expected ',' or ')'", this.currentToken.posStart, this.currentToken.posEnd));
+            }
+        }else{
+            if(this.currentToken.isNot(TokenType.RPAREN)){
+                return res.failure(new InvalidSyntaxError("Expected identifier or ')'", this.currentToken.posStart, this.currentToken.posEnd));
+            }
+        }
+
+        res.register_advancement();
+        this.advance();
+
+        if(this.currentToken.isNot(TokenType.ARROW)){
+            return res.failure(new InvalidSyntaxError("Expected '{'", this.currentToken.posStart, this.currentToken.posEnd));
+        }
+
+        res.register_advancement();
+        this.advance();
+
+        let nodeToReturn: Node = res.register(this.expression());
+        if(res.error) return res;
+        return res.success(new FunctionDefinitionNode(variableNameToken, argumentTokens, nodeToReturn));
     }
 
     whileExpression(){
@@ -250,94 +449,6 @@ class Parser{
         }
 
         return res.success(new IfNode(cases,elseCase));
-    }
-
-    power(){
-        return this.BinaryOperator(this.atom, [TokenType.POW], this.factor);
-    }
-
-    factor(){
-        let token = this.currentToken;
-        let res = new ParseResult();
-        if(token.is(TokenType.PLUS, TokenType.MINUS)){
-            res.register_advancement();
-            this.advance();
-
-            let factor = res.register(this.factor());
-            if(res.error) return res;
-
-            return res.success(new UnaryOperatorNode(token, factor));
-        }
-        return this.power();
-    }
-
-    term(){
-        return this.BinaryOperator(this.factor, [TokenType.MUL, TokenType.DIV]);
-    }
-
-    expression(){
-        let res = new ParseResult();
-
-        if(this.currentToken.matches(TokenType.KEYWORD, "clear")){
-            const clearToken = this.currentToken;
-            res.register_advancement();
-            this.advance();
-            return res.success(new ExecNode(clearToken, 'clear'));
-        }
-
-        if(this.currentToken.matches(TokenType.KEYWORD, "let")){
-            res.register_advancement();
-            this.advance();
-
-            if(!this.currentToken.matches(TokenType.IDENTIFIER)){
-                return res.failure(new InvalidSyntaxError("Expected Identifier", this.currentToken.posStart, this.currentToken.posEnd));
-            }
-
-            let varName = this.currentToken;
-            res.register_advancement();
-            this.advance();
-            if(this.currentToken.matches(TokenType.END)){
-                res.register_advancement();
-                this.advance();
-                return res.success(new VariableAssignmentNode(varName));
-            }
-            if(!this.currentToken.matches(TokenType.EQ)){
-                return res.failure(new InvalidSyntaxError("Expected '='", this.currentToken.posStart, this.currentToken.posEnd));
-            }
-            res.register_advancement();
-            this.advance();
-            let expression = res.register(this.expression());
-            if(res.error) return res;
-            return res.success(new VariableAssignmentNode(varName, expression));
-        }
-
-        let node = res.register(this.BinaryOperator(this.comparison_expression, [TokenType.LOR, TokenType.LAND]));
-
-        if(res.error) return res.failure(new InvalidSyntaxError(`Expected 'let', '+', '-', '*',or '/'`, this.currentToken.posStart, this.currentToken.posEnd));
-        return res.success(node);
-    }
-
-    comparison_expression(){
-        let res = new ParseResult();
-        if(this.currentToken.is(TokenType.NOT) || this.currentToken.matches(TokenType.KEYWORD, "not")){
-            const token = this.currentToken;
-            res.register_advancement();
-            this.advance();
-            let node = res.register(this.comparison_expression());
-            if(res.error) return res;
-            return res.success(new UnaryOperatorNode(token, node));
-        }
-
-        let node = res.register(this.BinaryOperator(this.arithmetic_expression, [TokenType.EEQ, TokenType.NEQ, TokenType.GT, TokenType.GTE, TokenType.LT, TokenType.LTE]));
-        
-        if(res.error){
-            return res.failure(new InvalidSyntaxError(`Expected '!=', '>', '>=', '<', '<=', or '=='`, this.currentToken.posStart, this.currentToken.posEnd));
-        }
-        return res.success(node);
-    }
-
-    arithmetic_expression(){
-        return this.BinaryOperator(this.term, [TokenType.PLUS, TokenType.MINUS]);
     }
 
     BinaryOperator(func1, operators: TokenType[], func2=null){

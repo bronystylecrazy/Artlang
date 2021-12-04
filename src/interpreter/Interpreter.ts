@@ -20,7 +20,10 @@ import ForNode from "../node/ForNode";
 import WhileNode from "../node/WhileNode";
 import Error from "../error/ErrorBase";
 import Node from "../node/NodeBase";
-import Atomic from "src/atomic/Atomic";
+import Atomic from "../atomic/Atomic";
+import FunctionDefinitionNode from "../node/FunctionDefinitionNode";
+import Function from "../atomic/Function";
+import FunctionInvokationNode from "../node/FunctionInvokationNode";
 
 class Interpreter{
 
@@ -237,6 +240,34 @@ class Interpreter{
             result = expressionResult;
         }
         return result;
+    }
+
+    visit_FunctionDefinitionNode(node: FunctionDefinitionNode, context: Context): RuntimeResult{
+        let res = new RuntimeResult();
+        let functionName = node.varName == null ? undefined: node.varName.value;
+        let bodyNode = node.bodyNode;
+        let argumentNames = node.argNames.map(arg => arg.value);
+        let functionValue = new Function(functionName, bodyNode, argumentNames, node.posStart.copy(), node.posEnd.copy(), context);
+        if(node.varName)
+            context.symbols.set(node.varName.value, functionValue);
+        return res.success(functionValue);
+    }
+
+    visit_FunctionInvokationNode(node: FunctionInvokationNode, context: Context): RuntimeResult{
+        let res = new RuntimeResult();
+        let args = [];
+        console.log('CONTEXTTTT',context)
+        let target: Function = res.register(this.visit(node.targetNode,context));
+        if(res.error) return res;
+        target = target.copy().setPos(node.posStart, node.posEnd);
+        for(let argNode of node.argNodes){
+            let arg = res.register(this.visit(argNode,context));
+            if(res.error) return res;
+            args.push(arg);
+        }
+        let returnValue = res.register(target.execute(args));
+        if(res.error) return res;
+        return res.success(returnValue);
     }
 }
 

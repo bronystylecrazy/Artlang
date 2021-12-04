@@ -1,10 +1,10 @@
-import Position from "../Lexer/Position";
-import Token from "../Lexer/Token";
+import Position from "../lexer/Position";
+import Token from "../lexer/Token";
 import Node from "./NodeBase";
 
 class UnaryOperatorNode extends Node{
 
-    constructor(public operator: Token, public right: Token){
+    constructor(public operator: Token, public right: Node){
         super();
         this.posStart = this.operator.posStart;
         this.posEnd = this.right.posEnd;

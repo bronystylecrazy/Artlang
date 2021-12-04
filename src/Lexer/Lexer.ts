@@ -1,8 +1,8 @@
 import { DIGIT, KEYWORDS, LETTERS, LETTER_DIGIT, TokenType } from '../constants';
-import IllegalCharacterError from '../Error/IllegalCharacterError';
-import LexerResult from '../Result/LexerResult';
-import TokenResult from '../Result/TokenResult';
-import Position from './Position'
+import IllegalCharacterError from '../error/IllegalCharacterError';
+import LexerResult from '../result/LexerResult';
+import TokenResult from '../result/TokenResult';
+import Position from './Position';
 import Token from './Token';
 
 class Lexer{
@@ -124,10 +124,11 @@ class Lexer{
         let dotCount = 0;
         let isBased = false;
         if(this.currentChar == '0'){
+            number += this.currentChar;
             this.advance();
             if(this.currentChar != null && ['b','x'].includes(this.currentChar.toLowerCase())){
                 isBased = true;
-                number += `0${this.currentChar}`;
+                number += `${this.currentChar}`;
                 this.advance();
             }
         }

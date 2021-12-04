@@ -1,5 +1,5 @@
-import Context from "../Context/ContextBase";
-import Position from "../Lexer/Position";
+import Context from "../context/Context";
+import Position from "../lexer/Position";
 import stringWithArrows from "../utils/stringWithArrows";
 import Error from "./ErrorBase";
 

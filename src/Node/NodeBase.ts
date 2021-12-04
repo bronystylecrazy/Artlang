@@ -1,4 +1,4 @@
-import Position from "../Lexer/Position";
+import Position from "../lexer/Position";
 
 class Node{
     public name: string;
@@ -7,6 +7,12 @@ class Node{
 
     constructor(){
         this.name = this.constructor.name;
+    }
+
+    setPos(posStart, posEnd){
+        this.posStart = posStart;
+        this.posEnd = posEnd;
+        return this;
     }
 }
 

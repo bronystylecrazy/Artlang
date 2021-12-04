@@ -1,5 +1,5 @@
-import Context from "../Context/context";
-import Position from "../Lexer/Position";
+import Context from "../context/Context";
+import Position from "../lexer/Position";
 import stringWithArrows from "../utils/stringWithArrows";
 
 class Error{
@@ -17,7 +17,7 @@ class Error{
     }
 
     toString(){
-        let result = `${this.name}: ${this.message}`;
+        let result = `${this.name}: ${this.message}\n`;
         result += "\n";
         result += `${stringWithArrows(this.posStart?.fileText,this.posStart, this.posEnd)}`;
         result += `\n    at ${this.posStart?.fileName}, Line: ${this.posStart?.line + 1}, Column: ${this.posStart?.column + 1}`;

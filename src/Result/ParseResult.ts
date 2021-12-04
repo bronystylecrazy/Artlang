@@ -1,11 +1,15 @@
-import Error from "../Error/ErrorBase";
-import Node from "../Node/NodeBase";
+import Error from "../error/ErrorBase";
+import Node from "../node/NodeBase";
 
 class ParseResult{
 
     advance_count: number = 0;
 
-    constructor(public error: Error, public node: Node){}
+    constructor(public error?: Error, public node?: Node){}
+
+    isError(){
+        return this.error != null || this.error != undefined;
+    }
 
     register_advancement(){
         this.advance_count++;

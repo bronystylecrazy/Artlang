@@ -1,4 +1,4 @@
-import Token from "../Lexer/Token";
+import Token from "../lexer/Token";
 import Node from "./NodeBase";
 
 class UndefinedNode extends Node{

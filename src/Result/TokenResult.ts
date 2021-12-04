@@ -1,5 +1,5 @@
-import Error from "../Error/ErrorBase";
-import Token from "../Lexer/Token";
+import Error from "../error/ErrorBase";
+import Token from "../lexer/Token";
 
 class TokenResult {
     token: Token;

@@ -1,5 +1,5 @@
-import Context from "../Context/Context";
-import Position from "../Lexer/Position";
+import Context from "../context/Context";
+import Position from "../lexer/Position";
 import Error from "./ErrorBase";
 
 class ExpectedCharacterError extends Error{

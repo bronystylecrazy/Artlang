@@ -1,16 +1,11 @@
-import IllegalCharacterError from "./src/Error/IllegalCharacterError";
-import Lexer from "./src/Lexer/Lexer";
-import Position from "./src/Lexer/Position";
-import Token from "./src/Lexer/Token";
-import TokenResult from "./src/Result/TokenResult";
 
+import { writeFileSync } from "fs";
+import Program from "./src/interpreter/Program";
 
-const lexer = new Lexer('1+3 ','sirawit.txt');
-const result = lexer.build({ save: true});
-
-
-
-if(result.isError()){
-    console.error(result.error.toString());
-    process.exit();
+let program = Program('4/0');
+if(program.error){
+    console.log(program.error.toString());
+    process.exit(1);
 }
+
+console.log(program.result.value.toString());

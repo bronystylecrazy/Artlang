@@ -188,12 +188,30 @@ class Lexer{
     makeString(): TokenResult{
         let string = '';
         let posStart = this.pos.copy();
-        var char = this.currentChar;
+        let char = this.currentChar;
+        let isEscaped = false;
+
+        const escapeChars = {
+            'n': '\n',
+            't': '\t',
+            '\"': '\"'
+        };
+
         this.advance();
-        while(this.currentChar != null && this.currentChar != char){
-            string += this.currentChar;
+
+        while(this.currentChar != null && (this.currentChar != char || isEscaped)){
+            if(isEscaped){
+                string += escapeChars[this.currentChar] || this.currentChar;
+                isEscaped = false;
+            }else{
+                if(this.currentChar == `\\`){
+                    isEscaped = true;
+                }
+                else string += this.currentChar;
+            }
             this.advance();
         }
+
         if(this.currentChar != char){
             return new TokenResult(new IllegalCharacterError(`Expected '${char}' at the end of the string`,posStart, this.pos.copy()));
         }

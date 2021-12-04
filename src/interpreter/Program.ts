@@ -4,10 +4,19 @@ import ProgramResult from "../result/ProgramResult";
 import Interpreter from "./Interpreter";
 import Context from "../context/Context";
 import SymbolTable from "../context/SymbolTable";
+import String from "../atomic/String";
+import Number from "../atomic/Number";
 
-const TOP_LEVEL_CONTEXT = Context.createContext('<vm>',null, null,new SymbolTable(null))
+const GLOBAL_VARIABLES = new SymbolTable().of({
+    world: new String("hello"),
+    __dir__: new String(__dirname),
+    __fileName__: new String(__filename),
+    count: new Number(0)
+});
 
-const Program = (source: string, { context = TOP_LEVEL_CONTEXT } = {}): ProgramResult => {
+let globalContext = Context.createContext('<vm>',null, null, GLOBAL_VARIABLES);
+
+const Program = (source: string): ProgramResult => {
     
     const lexer = new Lexer(source,'<Program>');
     const lexerResult = lexer.build({ save: true});
@@ -19,7 +28,6 @@ const Program = (source: string, { context = TOP_LEVEL_CONTEXT } = {}): ProgramR
     if(parseResult.isError()) return new ProgramResult(parseResult.error);
 
     const interpreter = new Interpreter();
-    const globalContext = context;
     const runtimeResult = interpreter.visit(parseResult.node, globalContext);
     if(runtimeResult.error) {
         return new ProgramResult(runtimeResult.error);

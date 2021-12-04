@@ -12,7 +12,7 @@ class Context{
         this.displayName = displayName;
         this.parent = parent;
         this.parentEntryPosition = parentEntryPosition;
-        if(symbols) this.symbols = new SymbolTable();
+        if(!symbols) this.symbols = new SymbolTable();
     }
     static createContext(
         displayName: string = "",

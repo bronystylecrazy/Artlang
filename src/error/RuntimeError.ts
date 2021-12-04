@@ -14,11 +14,11 @@ class RuntimeError extends Error{
         let ctx = this.context;
         let position = this.posStart;
         while(ctx){
-            result = `    at ${position.fileName}, Line: ${position.line+1}, Column: ${position.column+1} in ${ctx.displayName}\n` + result;
+            result = `\n    at ${position.fileName}, Line: ${position.line+1}, Column: ${position.column+1} in ${ctx.displayName}` + result;
             ctx = ctx?.parent;
             position = ctx?.parentEntryPosition;
         }
-        return `Traceback from these stackframes:\n\n${body}\n${this.name}: ${this.message}\n` + result;
+        return `Traceback from these stackframes:\n\n${body}\n${this.name}: ${this.message}` + result;
     }
     toString(){
         let result = ``;

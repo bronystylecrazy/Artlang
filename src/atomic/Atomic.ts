@@ -16,8 +16,7 @@ class Atomic{
     }
 
     copy(){
-        // const Type = [Number, Boolean, String, Atomic, Undefined][0];
-        return new Atomic(this.value, this.posStart, this.posEnd,this.context);
+        return new (<typeof Atomic>this.constructor)(this.value, this.posStart, this.posEnd,this.context);
     }
 
     setContext(context){

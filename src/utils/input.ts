@@ -1,13 +1,11 @@
-import readline from 'readline';
-
-var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+import readline from 'readline-sync';
 
 
-rl.question(">", function(answer) {
-    console.log("Thank you for your valuable feedback:", answer);
-    rl.close();
-});
 
+
+function input(question: string){
+    var result = readline.question(question);
+    return result;
+}
+
+export default input;

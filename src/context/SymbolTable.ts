@@ -1,6 +1,6 @@
 class SymbolTable {
     
-    symbols = {};
+    public symbols = {};
     constructor(public parent: SymbolTable = null) {}
     
     get(name: string){
@@ -26,6 +26,14 @@ class SymbolTable {
 
     create(parent?: SymbolTable){
         return new SymbolTable(parent);
+    }
+
+    of(symbols: Object){
+        const table = new SymbolTable();
+        for (const name in symbols) {
+            table.set(name, symbols[name]);
+        }
+        return table;
     }
 }
 

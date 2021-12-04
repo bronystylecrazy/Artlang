@@ -1,7 +1,7 @@
 import Token from "../lexer/Token";
 import Node from "./NodeBase";
 
-class VarAccessNode extends Node{
+class VariableAccessNode extends Node{
     constructor(public token: Token){
         super();
         this.posStart = this.token.posStart;
@@ -9,4 +9,4 @@ class VarAccessNode extends Node{
     }
 }
 
-export default VarAccessNode;
+export default VariableAccessNode;

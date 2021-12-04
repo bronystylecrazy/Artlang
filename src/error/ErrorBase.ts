@@ -17,9 +17,9 @@ class Error{
     }
 
     toString(){
-        let result = `${this.name}: ${this.message}\n`;
-        result += "\n";
-        result += `${stringWithArrows(this.posStart?.fileText,this.posStart, this.posEnd)}`;
+        let result = "Parsing Error with these results:\n";
+        result += `\n${stringWithArrows(this.posStart?.fileText,this.posStart, this.posEnd)}`;
+        result += `\n${this.name}: ${this.message}`;
         result += `\n    at ${this.posStart?.fileName}, Line: ${this.posStart?.line + 1}, Column: ${this.posStart?.column + 1}`;
         return result;
     }

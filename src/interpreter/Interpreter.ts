@@ -10,20 +10,21 @@ import NumberNode from "../node/NumberNode";
 import UnaryOperatorNode from "../node/UnaryOperatorNode";
 import RuntimeResult from "../result/RuntimeResult";
 import ParseResult from "../result/parseResult";
-import VarAccessNode from "../node/VarAccessNode";
+import VariableAccessNode from "../node/VariableAccessNode";
 import VariableAssignmentNode from "../node/VariableAssignmentNode";
 import StringNode from "../node/StringNode";
 import BooleanNode from "../node/BooleanNode";
 import UndefinedNode from "../node/UndefinedNode";
 import IfNode from "../node/IfNode";
-import CaseResult from "../result/CaseResult";
 import ForNode from "../node/ForNode";
 import WhileNode from "../node/WhileNode";
 import Error from "../error/ErrorBase";
+import Node from "../node/NodeBase";
+import Atomic from "src/atomic/Atomic";
 
 class Interpreter{
 
-    visit(_node, context: Context): RuntimeResult {
+    visit(_node: Node, context: Context): RuntimeResult {
         let node = _node;
 
         while(node instanceof ParseResult){
@@ -35,11 +36,11 @@ class Interpreter{
         return method.call(this, node, context);
     }
 
-    no_visit_method(node,context) {
+    no_visit_method(node: Node,context: Context): RuntimeResult {
         return new RuntimeResult().failure(new RuntimeError(`No visit_${node.constructor.name} method defined`, node.posStart, node.posEnd, context));
     }
 
-    visit_NumberNode(node: NumberNode,context: Context){
+    visit_NumberNode(node: NumberNode,context: Context): RuntimeResult{
         return new RuntimeResult().success(new Number(node.value).setContext(context).setPos(node.posStart, node.posEnd));
     }
 
@@ -49,29 +50,52 @@ class Interpreter{
         let left = res.register(this.visit(node.left,context));
         if(res.error) return res.failure(res.error);
         let right = res.register(this.visit(node.right,context));
+
         if(res.error) return res.failure(res.error);
         if(node.operator.is(TokenType.PLUS)) {
+            if(!left.add) return res.failure(new RuntimeError(`Operator '+' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.add(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '+' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.MINUS)){
+            if(!left.sub) return res.failure(new RuntimeError(`Operator '-' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.sub(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '-' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.MUL)){
+            if(!left.mul) return res.failure(new RuntimeError(`Operator '*' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.mul(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '*' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.DIV)){
+            if(!left.div) return res.failure(new RuntimeError(`Operator '/' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.div(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '/' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.POW)){
+            if(!left.pow) return res.failure(new RuntimeError(`Operator '**' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.pow(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '**' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.EEQ)){
+            if(!left.equals) return res.failure(new RuntimeError(`Operator '==' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.equals(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '==' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.NEQ)){
+            if(!left.notEquals) return res.failure(new RuntimeError(`Operator '!=' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.notEquals(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '!=' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.LT)){
+            if(!left.lessThan) return res.failure(new RuntimeError(`Operator '<' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.lessThan(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '<' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.LTE)){
+            if(!left.lessThanOrEqual) return res.failure(new RuntimeError(`Operator '<=' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.lessThanOrEqual(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '<=' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }else if(node.operator.is(TokenType.GT)){
+            if(!left.greaterThan) return res.failure(new RuntimeError(`Operator '>' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.greaterThan(right);
-        }else if(node.operator.is(TokenType.LT)){
+            if(!result) return res.failure(new RuntimeError(`Operator '>' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
+        }else if(node.operator.is(TokenType.GTE)){
+            if(!left.greaterThanOrEqual) return res.failure(new RuntimeError(`Operator '>=' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
             result = left.greaterThanOrEqual(right);
+            if(!result) return res.failure(new RuntimeError(`Operator '>=' is not defined for type '${left.constructor.name}'`, node.posStart, node.posEnd, context));
         }
 
         if(result instanceof Error){
@@ -84,7 +108,7 @@ class Interpreter{
         return res.success(result.setPos(node.posStart, node.posEnd));
     }
 
-    visit_UnaryOperatorNode(node: UnaryOperatorNode,context){
+    visit_UnaryOperatorNode(node: UnaryOperatorNode,context: Context): RuntimeResult{
         let res = new RuntimeResult();
         let right = res.register(this.visit(node.right,context));
         if(node.operator.is(TokenType.MINUS)){
@@ -111,14 +135,14 @@ class Interpreter{
 
         if(right.error)
             return res.failure(right.error);
-        
-        return res.success(right.setPos(node.posStart, node.posEnd));
+        let value = right.value.copy().setPos(node.posStart, node.posEnd);
+        return res.success(value);
     }
 
-    visit_VarAccessNode(node: VarAccessNode,context: Context): RuntimeResult {
+    visit_VariableAccessNode(node: VariableAccessNode,context: Context): RuntimeResult {
         let res = new RuntimeResult();
         let varName = node.token.value;
-        let value = context.symbols[varName];
+        let value: Atomic = context.symbols.get(varName);
         if(!value){
             return res.failure(new RuntimeError(`Undefined variable '${varName}'`, node.posStart, node.posEnd, context));
         }
@@ -126,7 +150,7 @@ class Interpreter{
         return res.success(value);
     }
 
-    visit_VarAssignmentNode(node: VariableAssignmentNode,context): RuntimeResult{
+    visit_VariableAssignmentNode(node: VariableAssignmentNode,context: Context): RuntimeResult{
         let res = new RuntimeResult();
         let varName = node.token.value;
         let value = res.register(this.visit(node.valueNode,context));
@@ -134,7 +158,7 @@ class Interpreter{
         // if(varName in context.symbols){
         //     return res.failure(new RuntimeError(`Variable '${varName}' is already defined`, node.posStart, node.posEnd, context));
         // }
-        context.symbols[varName] = value;
+        context.symbols.set(varName, value);
         return res.success(value);
     }
 
@@ -173,7 +197,7 @@ class Interpreter{
             return res.success(elseResult);
         }
 
-        return new RuntimeResult().success(new Undefined().setPos(node.posStart, node.posEnd).setContext(context));
+        return res.success(new Undefined().setPos(node.posStart, node.posEnd).setContext(context));
     }
 
     visit_ForNode(node: ForNode, context: Context): RuntimeResult{

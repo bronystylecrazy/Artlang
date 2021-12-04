@@ -10,7 +10,7 @@ import NumberNode from "../node/NumberNode";
 import StringNode from "../node/StringNode";
 import UnaryOperatorNode from "../node/UnaryOperatorNode";
 import UndefinedNode from "../node/UndefinedNode";
-import VarAccessNode from "../node/VarAccessNode";
+import VariableAccessNode from "../node/VariableAccessNode";
 import VariableAssignmentNode from "../node/VariableAssignmentNode";
 import WhileNode from "../node/WhileNode";
 import CaseResult from "../result/CaseResult";
@@ -49,7 +49,7 @@ class Parser{
         }else if(token.is(TokenType.IDENTIFIER)){
             res.register_advancement();
             this.advance();
-            return res.success(new VarAccessNode(token));
+            return res.success(new VariableAccessNode(token));
         }else if(token.is(TokenType.STRING)){
             res.register_advancement();
             this.advance();
